@@ -1,0 +1,154 @@
+/* ═══════════════════════════════════════════════════════════════
+   InkWise — Shared Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Pacifico&display=swap');
+
+/* ── Typography ──────────────────────────────────────────────── */
+.manga-title {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 1px;
+}
+
+.manga-text {
+  font-family: 'Comic Neue', cursive;
+  font-weight: 700;
+}
+
+/* ── Manga Panel ─────────────────────────────────────────────── */
+.manga-panel {
+  border: 2px solid #000;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Speech & Thought Bubbles ────────────────────────────────── */
+.speech-bubble {
+  position: relative;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 16px;
+  padding: 1rem;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 14px solid transparent;
+  border-top-color: #000;
+  border-bottom: 0;
+  margin-left: -14px;
+}
+
+.thought-bubble {
+  position: relative;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50%;
+  padding: 1rem;
+}
+
+.thought-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  right: 25px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50%;
+}
+
+.thought-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  right: 15px;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50%;
+}
+
+/* ── Action Button ───────────────────────────────────────────── */
+.action-button {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  transform: scale(1.03);
+}
+
+/* ── Sound Effect Tag ────────────────────────────────────────── */
+.sound-effect {
+  font-family: 'Bangers', cursive;
+  transform: rotate(-5deg) skew(-5deg);
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  letter-spacing: 1px;
+}
+
+/* ── Halftone ────────────────────────────────────────────────── */
+.halftone {
+  background-image: radial-gradient(#000 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* ── Custom Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a5b4fc;
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Prose Content (AI response formatting) ──────────────────── */
+.prose-content {
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.prose-content strong {
+  font-weight: 800;
+}
+
+.prose-content em {
+  font-style: italic;
+}
+
+/* ── Selection ───────────────────────────────────────────────── */
+::selection {
+  background: #c7d2fe;
+  color: #312e81;
+}

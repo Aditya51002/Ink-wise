@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InkWise — Unleash Your Creativity</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#000000", secondary: "#444444" },
+            borderRadius: {
+              none: "0px", sm: "4px", DEFAULT: "8px", md: "12px",
+              lg: "16px", xl: "20px", "2xl": "24px", "3xl": "32px",
+              full: "9999px", button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      body {
+        font-family: 'Comic Neue', cursive;
+        background-color: #f8f8f8;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+      .manga-title { font-family: 'Bangers', cursive; letter-spacing: 1px; }
+      .manga-text { font-family: 'Comic Neue', cursive; font-weight: 700; }
+      .manga-panel {
+        border: 2px solid #000; position: relative; overflow: hidden;
+        box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+      }
+      .speech-bubble { position: relative; background: #fff; border: 2px solid #000; border-radius: 12px; padding: 1rem; }
+      .speech-bubble:after {
+        content: ''; position: absolute; bottom: -15px; left: 50%;
+        width: 0; height: 0; border: 15px solid transparent;
+        border-top-color: #000; border-bottom: 0; margin-left: -15px;
+      }
+      .thought-bubble { position: relative; background: #fff; border: 2px solid #000; border-radius: 50%; padding: 1rem; }
+      .thought-bubble:before { content: ''; position: absolute; bottom: -10px; right: 25px; width: 20px; height: 20px; background: #fff; border: 2px solid #000; border-radius: 50%; }
+      .thought-bubble:after  { content: ''; position: absolute; bottom: -20px; right: 15px; width: 10px; height: 10px; background: #fff; border: 2px solid #000; border-radius: 50%; }
+      .action-button { font-family: 'Bangers', cursive; transform: rotate(-2deg); transition: all 0.2s ease; }
+      .action-button:hover { transform: scale(1.05) rotate(0deg); }
+      .action-button:hover .hover-effect { opacity: 0.35; background-size: 10px 10px; }
+      .action-button:active .hover-effect { opacity: 0.5; background-size: 12px 12px; background-image: radial-gradient(#fff 1px, transparent 1px); }
+      .halftone { background-image: radial-gradient(#000 1px, transparent 1px); background-size: 8px 8px; }
+      .star-rating { position: relative; display: inline-block; font-size: 0; }
+      .star-rating span { display: inline-block; position: relative; width: 20px; height: 20px; }
+      .star-rating span:before { content: "\2605"; font-size: 20px; color: #000; }
+      .manga-page-flip { position: relative; transition: all 0.3s ease; }
+      .manga-page-flip:hover { transform: perspective(1000px) rotateY(-5deg); box-shadow: 10px 5px 15px rgba(0,0,0,0.1); }
+      .sound-effect { font-family: 'Bangers', cursive; transform: rotate(-5deg) skew(-5deg); display: inline-block; padding: 0.25rem 0.5rem; letter-spacing: 1px; }
+
+      /* Auth Modal Styles */
+      .auth-backdrop { backdrop-filter: blur(6px); }
+      .auth-input { transition: all 0.2s ease; }
+      .auth-input:focus { border-color: #000; box-shadow: 3px 3px 0px rgba(0,0,0,0.15); outline: none; }
+      @keyframes modalSlideIn { from { opacity: 0; transform: translateY(30px) rotate(0deg); } to { opacity: 1; transform: translateY(0) rotate(1deg); } }
+      @keyframes modalSlideInAlt { from { opacity: 0; transform: translateY(30px) rotate(0deg); } to { opacity: 1; transform: translateY(0) rotate(-1deg); } }
+      .modal-animate { animation: modalSlideIn 0.35s ease-out forwards; }
+      .modal-animate-alt { animation: modalSlideInAlt 0.35s ease-out forwards; }
+      .btn-loading { pointer-events: none; opacity: 0.7; }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <header class="w-full bg-white border-b-2 border-black sticky top-0 z-40">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="font-['Pacifico'] text-2xl">InkWise</div>
+        <nav class="hidden md:flex space-x-6">
+          <a href="#home" class="manga-text text-black hover:text-gray-700 relative px-2 py-1">Home</a>
+          <a href="#features" class="manga-text text-black hover:text-gray-700 relative px-2 py-1">Features</a>
+          <a href="#examples" class="manga-text text-black hover:text-gray-700 relative px-2 py-1">Examples</a>
+          <a href="#reviews" class="manga-text text-black hover:text-gray-700 relative px-2 py-1">Reviews</a>
+        </nav>
+        <div class="flex items-center space-x-4">
+          
+            <span class="manga-text text-gray-600 hidden sm:inline"></span>
+            <a href="/chatbot" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap text-sm">Open ChatBot</a>
+            <a href="/api/logout" class="manga-text text-red-600 hover:text-red-800 text-sm">Logout</a>
+          
+            <a href="javascript:void(0)" onclick="openAuthModal('login')" class="manga-text text-black hover:text-gray-700 cursor-pointer">Login</a>
+            <button onclick="openAuthModal('signup')" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap">Sign Up Free</button>
+          
+        </div>
+        <div class="md:hidden w-8 h-8 flex items-center justify-center cursor-pointer" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+          <i class="ri-menu-line ri-lg"></i>
+        </div>
+      </div>
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="hidden md:hidden border-t-2 border-black bg-white px-4 py-3">
+        <a href="#home" class="block manga-text py-2">Home</a>
+        <a href="#features" class="block manga-text py-2">Features</a>
+        <a href="#examples" class="block manga-text py-2">Examples</a>
+        <a href="#reviews" class="block manga-text py-2">Reviews</a>
+        <hr class="my-2 border-gray-300"/>
+        
+          <a href="/chatbot" class="block manga-text py-2 text-indigo-700">Open ChatBot</a>
+          <a href="/api/logout" class="block manga-text py-2 text-red-600">Logout</a>
+        
+          <a href="javascript:void(0)" onclick="openAuthModal('login')" class="block manga-text py-2">Login</a>
+          <a href="javascript:void(0)" onclick="openAuthModal('signup')" class="block manga-text py-2 text-indigo-700">Sign Up Free</a>
+        
+      </div>
+    </header>
+
+    <main>
+      <!-- ═══════════════════ HERO ═══════════════════ -->
+      <section id="home" class="w-full relative overflow-hidden border-b-4 border-black"
+        style="background-image: url('https://public.readdy.ai/ai/img_res/461ee2ba1d566b5ae1ef33f293c1f40c.jpg'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent"></div>
+        <div class="container mx-auto px-4 py-24 md:py-32 relative z-10">
+          <div class="max-w-2xl">
+            <div class="manga-panel bg-white p-6 mb-8 transform rotate-1">
+              <h1 class="manga-title text-5xl md:text-7xl mb-4 leading-tight">
+                TURN YOUR IDEAS INTO EPIC STORIES!
+              </h1>
+              <p class="manga-text text-xl md:text-2xl mb-6">
+                The AI-powered writing assistant that helps you craft amazing stories,
+                overcome writer's block, and unleash your creativity!
+              </p>
+            </div>
+            <div class="speech-bubble max-w-md mb-8 transform -rotate-1">
+              <p class="manga-text text-xl">
+                "Ready to bring your imagination to life? I'll help you craft the perfect story!"
+              </p>
+            </div>
+            
+              <button onclick="window.location.href='/chatbot'" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+                <span class="relative z-10">BOOM! START WRITING</span>
+                <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+              </button>
+            
+              <button onclick="openAuthModal('signup')" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+                <span class="relative z-10">BOOM! GET STARTED</span>
+                <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+              </button>
+            
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ INTRO PANEL ═══════════════════ -->
+      <section class="container mx-auto px-4 py-16 md:py-24">
+        <div class="flex flex-col md:flex-row gap-8">
+          <div class="manga-panel bg-white p-6 flex-1 transform -rotate-1 min-h-[300px]"
+            style="background-image: url('https://public.readdy.ai/ai/img_res/934591dfcbcd6e408ced83d2cf80e363.jpg'); background-size: cover; background-position: center;">
+          </div>
+          <div class="flex-1 flex flex-col justify-center">
+            <div class="manga-panel bg-white p-6 transform rotate-1">
+              <h2 class="manga-title text-3xl mb-4">WRITER'S BLOCK? NO PROBLEM!</h2>
+              <p class="manga-text text-xl">
+                We get it. You've got ideas, but the words don't flow.
+                That's where we come in. Our AI assistant helps you break through
+                creative barriers and transform your thoughts into compelling narratives.
+              </p>
+            </div>
+            <div class="thought-bubble mt-8 transform -rotate-1">
+              <p class="manga-text text-lg italic">
+                "I had this amazing story idea but couldn't get past the first paragraph... until now!"
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
+      <section id="features" class="bg-white py-16 border-y-4 border-black">
+        <div class="container mx-auto px-4">
+          <h2 class="manga-title text-4xl text-center mb-12">HOW IT WORKS</h2>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="manga-panel bg-white p-4 transform -rotate-1">
+              <div class="h-48 md:h-64 mb-4"
+                style="background-image: url('https://public.readdy.ai/ai/img_res/e5020b448ff90f050b29f55c92ec5c8a.jpg'); background-size: cover; background-position: center;"></div>
+              <div class="sound-effect bg-black text-white inline-block mb-2">IDEA!</div>
+              <p class="manga-text">Start with your concept or prompt</p>
+            </div>
+            <div class="manga-panel bg-white p-4 transform rotate-1">
+              <div class="h-48 md:h-64 mb-4"
+                style="background-image: url('https://public.readdy.ai/ai/img_res/577ee939f99309284535babe46439849.jpg'); background-size: cover; background-position: center;"></div>
+              <div class="sound-effect bg-black text-white inline-block mb-2">WHOOSH!</div>
+              <p class="manga-text">AI enters to assist your writing</p>
+            </div>
+            <div class="manga-panel bg-white p-4 transform -rotate-1">
+              <div class="h-48 md:h-64 mb-4"
+                style="background-image: url('https://public.readdy.ai/ai/img_res/171915ef53596641811b5409e936ea2b.jpg'); background-size: cover; background-position: center;"></div>
+              <div class="sound-effect bg-black text-white inline-block mb-2">TWIST!</div>
+              <p class="manga-text">Develop your plot with suggestions</p>
+            </div>
+            <div class="manga-panel bg-white p-4 transform rotate-1">
+              <div class="h-48 md:h-64 mb-4"
+                style="background-image: url('https://public.readdy.ai/ai/img_res/541ff124d2c975fdc89679c7c8056818.jpg'); background-size: cover; background-position: center;"></div>
+              <div class="sound-effect bg-black text-white inline-block mb-2">TADA!</div>
+              <p class="manga-text">Complete your masterpiece</p>
+            </div>
+          </div>
+          <div class="text-center">
+            <p class="manga-text text-xl max-w-3xl mx-auto">
+              We turn sparks into stories — one panel at a time. Our AI understands
+              narrative structure, character development, and pacing to help you create compelling fiction.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ BEFORE & AFTER ═══════════════════ -->
+      <section id="examples" class="container mx-auto px-4 py-16 md:py-24">
+        <h2 class="manga-title text-4xl text-center mb-12">BEFORE &amp; AFTER</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+          <div class="manga-page-flip">
+            <div class="manga-panel bg-white p-6">
+              <h3 class="manga-title text-2xl mb-4">BEFORE</h3>
+              <div class="p-4 bg-gray-100 border border-dashed border-gray-400 mb-4">
+                <p class="manga-text text-gray-600 italic">
+                  "I want to write a story about a detective who can talk to ghosts but no one believes him."
+                </p>
+              </div>
+              <div class="sound-effect bg-gray-200 text-black inline-block">???</div>
+            </div>
+          </div>
+          <div class="manga-page-flip">
+            <div class="manga-panel bg-white p-6">
+              <h3 class="manga-title text-2xl mb-4">AFTER</h3>
+              <div class="p-4 bg-gray-100 border border-black mb-4">
+                <p class="manga-text">
+                  "Detective Haruki Tanaka slammed his case file shut. Another murder solved,
+                  but he couldn't tell anyone how. The victim's ghost had pointed directly at the
+                  killer — her own brother. 'They'll never believe me,' he muttered as the ghost
+                  nodded sadly before fading away."
+                </p>
+              </div>
+              <div class="sound-effect bg-black text-white inline-block">SPARK!</div>
+            </div>
+          </div>
+          <div class="manga-page-flip">
+            <div class="manga-panel bg-white p-6">
+              <h3 class="manga-title text-2xl mb-4">BEFORE</h3>
+              <div class="p-4 bg-gray-100 border border-dashed border-gray-400 mb-4">
+                <p class="manga-text text-gray-600 italic">
+                  "Need help with a fantasy story about a magical library."
+                </p>
+              </div>
+              <div class="sound-effect bg-gray-200 text-black inline-block">???</div>
+            </div>
+          </div>
+          <div class="manga-page-flip">
+            <div class="manga-panel bg-white p-6">
+              <h3 class="manga-title text-2xl mb-4">AFTER</h3>
+              <div class="p-4 bg-gray-100 border border-black mb-4">
+                <p class="manga-text">
+                  "The Infinite Library stretched beyond what Eliza's eyes could see. Bookshelves
+                  towered hundreds of feet high, with ladders that moved on their own.
+                  'First time?' asked a small dragon perched on a nearby desk, smoke curling
+                  from its nostrils. 'The autobiographies section is particularly dangerous.
+                  Those books tend to rewrite themselves when no one's looking.'"
+                </p>
+              </div>
+              <div class="sound-effect bg-black text-white inline-block">MAGIC!</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ REVIEWS ═══════════════════ -->
+      <section id="reviews" class="bg-white py-16 border-y-4 border-black">
+        <div class="container mx-auto px-4">
+          <h2 class="manga-title text-4xl text-center mb-12">WHAT OUR USERS SAY</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="manga-panel bg-white p-6 transform -rotate-1">
+              <div class="flex items-start mb-4">
+                <div class="w-16 h-16 mr-4 rounded-full overflow-hidden border-2 border-black"
+                  style="background-image: url('https://public.readdy.ai/ai/img_res/335bb8780f8b43caa4a6890ba0a7c478.jpg'); background-size: cover; background-position: center;"></div>
+                <div>
+                  <h3 class="manga-text text-lg">Emily Nakamura</h3>
+                  <div class="star-rating"><span></span><span></span><span></span><span></span><span></span></div>
+                </div>
+              </div>
+              <p class="manga-text italic">
+                "I was stuck on my novel for months. InkWise helped me break through
+                my writer's block and finish my first draft in just two weeks!"
+              </p>
+            </div>
+            <div class="manga-panel bg-white p-6 transform rotate-1">
+              <div class="flex items-start mb-4">
+                <div class="w-16 h-16 mr-4 rounded-full overflow-hidden border-2 border-black"
+                  style="background-image: url('https://public.readdy.ai/ai/img_res/3b2fb2a3629f16681e9b75b9a61614bf.jpg'); background-size: cover; background-position: center;"></div>
+                <div>
+                  <h3 class="manga-text text-lg">Professor James Chen</h3>
+                  <div class="star-rating"><span></span><span></span><span></span><span></span><span></span></div>
+                </div>
+              </div>
+              <p class="manga-text italic">
+                "As a creative writing teacher, I recommend this tool to all my students.
+                It doesn't replace creativity but enhances it. The character development
+                suggestions are particularly impressive!"
+              </p>
+            </div>
+            <div class="manga-panel bg-white p-6 transform -rotate-1">
+              <div class="flex items-start mb-4">
+                <div class="w-16 h-16 mr-4 rounded-full overflow-hidden border-2 border-black"
+                  style="background-image: url('https://public.readdy.ai/ai/img_res/b0ed854c47ba043e8a84a7ec3ea99404.jpg'); background-size: cover; background-position: center;"></div>
+                <div>
+                  <h3 class="manga-text text-lg">Aiden Rodriguez</h3>
+                  <div class="star-rating"><span></span><span></span><span></span><span></span><span></span></div>
+                </div>
+              </div>
+              <p class="manga-text italic">
+                "I use InkWise for my fanfiction and it's been a game-changer!
+                It helps me stay consistent with character voices and gives me ideas
+                when I'm stuck on plot points."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════ FINAL CTA ═══════════════════ -->
+      <section class="container mx-auto px-4 py-16 md:py-24">
+        <div class="manga-panel bg-white p-8 md:p-12 max-w-5xl mx-auto relative overflow-hidden">
+          <div class="absolute right-0 bottom-0 w-1/3 h-full"
+            style="background-image: url('https://public.readdy.ai/ai/img_res/e03caf190bd63bd66487f54472506466.jpg'); background-size: contain; background-position: bottom right; background-repeat: no-repeat;"></div>
+          <div class="max-w-2xl relative z-10">
+            <h2 class="manga-title text-5xl mb-6">YOUR STORY BEGINS HERE</h2>
+            <p class="manga-text text-xl mb-8">
+              Join thousands of writers who have transformed their creative process
+              with InkWise. Start crafting your masterpiece today!
+            </p>
+            
+            <button onclick="window.location.href='/chatbot'"
+              class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+              <span class="relative z-10">LAUNCH THE CHATBOT!</span>
+              <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+            </button>
+            
+            <button onclick="openAuthModal('signup')"
+              class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+              <span class="relative z-10">LAUNCH THE CHATBOT!</span>
+              <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+            </button>
+                
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ═══════════════════ FOOTER ═══════════════════ -->
+    <footer class="bg-black text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <div class="font-['Pacifico'] text-2xl text-white mb-4">InkWise</div>
+            <p class="manga-text text-gray-300 mb-4">
+              The AI-powered creative writing assistant that brings your stories to life!
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="w-8 h-8 flex items-center justify-center bg-white text-black rounded-full"><i class="ri-twitter-x-line"></i></a>
+              <a href="#" class="w-8 h-8 flex items-center justify-center bg-white text-black rounded-full"><i class="ri-instagram-line"></i></a>
+              <a href="#" class="w-8 h-8 flex items-center justify-center bg-white text-black rounded-full"><i class="ri-facebook-line"></i></a>
+              <a href="#" class="w-8 h-8 flex items-center justify-center bg-white text-black rounded-full"><i class="ri-discord-line"></i></a>
+            </div>
+          </div>
+          <div>
+            <h3 class="manga-text text-lg mb-4">Product</h3>
+            <ul class="space-y-2">
+              <li><a href="#features" class="text-gray-300 hover:text-white">Features</a></li>
+              <li><a href="#examples" class="text-gray-300 hover:text-white">Examples</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Writing Prompts</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="manga-text text-lg mb-4">Resources</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-300 hover:text-white">Blog</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Writing Tips</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Community</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Support</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="manga-text text-lg mb-4">Company</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-300 hover:text-white">About Us</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Privacy Policy</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Terms of Service</a></li>
+              <li><a href="#" class="text-gray-300 hover:text-white">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p class="manga-text text-gray-400 mb-4 md:mb-0">&copy; 2026 InkWise. All rights reserved.</p>
+          <div class="flex items-center space-x-4">
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-visa-line ri-lg"></i></div>
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-mastercard-line ri-lg"></i></div>
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-paypal-line ri-lg"></i></div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ═══════════════════ AUTH MODAL ═══════════════════ -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/60 auth-backdrop" onclick="closeAuthModal()"></div>
+
+      <!-- Modal Container -->
+      <div class="relative flex items-center justify-center min-h-screen p-4">
+
+        <!-- ──────── LOGIN FORM ──────── -->
+        <div id="login-form" class="manga-panel bg-white p-8 w-full max-w-md relative modal-animate z-10">
+          <button onclick="closeAuthModal()" class="absolute top-3 right-4 text-3xl font-bold leading-none hover:text-gray-500 transition-colors">&times;</button>
+
+          <div class="sound-effect bg-black text-white inline-block mb-4 text-lg">LOGIN!</div>
+          <h2 class="manga-title text-4xl mb-2">Welcome Back, Writer!</h2>
+          <p class="manga-text text-gray-500 mb-6">Pick up your pen where you left off.</p>
+
+          <div id="login-error" class="hidden bg-red-50 border-2 border-red-400 text-red-700 p-3 rounded mb-4 manga-text text-sm"></div>
+          <div id="login-success" class="hidden bg-green-50 border-2 border-green-400 text-green-700 p-3 rounded mb-4 manga-text text-sm"></div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="manga-text block mb-1 text-sm text-gray-700">Email Address</label>
+              <input type="email" id="login-email"
+                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div>
+              <label class="manga-text block mb-1 text-sm text-gray-700">Password</label>
+              <input type="password" id="login-password"
+                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                placeholder="Enter your password" autocomplete="current-password">
+            </div>
+            <button id="login-btn" onclick="handleLogin()"
+              class="action-button w-full bg-black text-white text-xl px-6 py-3 !rounded-button whitespace-nowrap transform -rotate-1 relative overflow-hidden">
+              <span class="relative z-10" id="login-btn-text">LET'S GO!</span>
+              <div class="absolute inset-0 halftone opacity-20 hover-effect"></div>
+            </button>
+          </div>
+
+          <p class="manga-text text-center mt-6 text-sm">
+            Don't have an account?
+            <a href="javascript:void(0)" onclick="showSignup()" class="underline font-bold text-indigo-700 hover:text-indigo-900">Sign up here!</a>
+          </p>
+        </div>
+
+        <!-- ──────── SIGNUP FORM ──────── -->
+        <div id="signup-form" class="manga-panel bg-white p-8 w-full max-w-md relative modal-animate-alt z-10 hidden">
+          <button onclick="closeAuthModal()" class="absolute top-3 right-4 text-3xl font-bold leading-none hover:text-gray-500 transition-colors">&times;</button>
+
+          <div class="sound-effect bg-black text-white inline-block mb-4 text-lg">JOIN!</div>
+          <h2 class="manga-title text-4xl mb-2">Start Your Story!</h2>
+          <p class="manga-text text-gray-500 mb-6">Create an account and unleash your creativity.</p>
+
+          <div id="signup-error" class="hidden bg-red-50 border-2 border-red-400 text-red-700 p-3 rounded mb-4 manga-text text-sm"></div>
+          <div id="signup-success" class="hidden bg-green-50 border-2 border-green-400 text-green-700 p-3 rounded mb-4 manga-text text-sm"></div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="manga-text block mb-1 text-sm text-gray-700">Full Name</label>
+              <input type="text" id="signup-name"
+                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                placeholder="Your full name" autocomplete="name">
+            </div>
+            <div>
+              <label class="manga-text block mb-1 text-sm text-gray-700">Email Address</label>
+              <input type="email" id="signup-email"
+                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="manga-text block mb-1 text-sm text-gray-700">Password</label>
+                <input type="password" id="signup-password"
+                  class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                  placeholder="Min 6 chars" autocomplete="new-password">
+              </div>
+              <div>
+                <label class="manga-text block mb-1 text-sm text-gray-700">Confirm</label>
+                <input type="password" id="signup-confirm"
+                  class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                  placeholder="Re-type" autocomplete="new-password">
+              </div>
+            </div>
+            <button id="signup-btn" onclick="handleSignup()"
+              class="action-button w-full bg-black text-white text-xl px-6 py-3 !rounded-button whitespace-nowrap transform rotate-1 relative overflow-hidden">
+              <span class="relative z-10" id="signup-btn-text">CREATE ACCOUNT!</span>
+              <div class="absolute inset-0 halftone opacity-20 hover-effect"></div>
+            </button>
+          </div>
+
+          <p class="manga-text text-center mt-6 text-sm">
+            Already have an account?
+            <a href="javascript:void(0)" onclick="showLogin()" class="underline font-bold text-indigo-700 hover:text-indigo-900">Login here!</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+    <script>
+      /* ── Scroll animations ─────────────────────────── */
+      document.addEventListener("DOMContentLoaded", function () {
+        const mangaPanels = document.querySelectorAll(".manga-panel:not(#login-form):not(#signup-form)");
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = entry.target.classList.contains("rotate-1")
+                ? "rotate(1deg)" : "rotate(-1deg)";
+            }
+          });
+        }, { threshold: 0.1 });
+        mangaPanels.forEach((panel) => {
+          panel.style.opacity = "0";
+          panel.style.transition = "all 0.5s ease";
+          observer.observe(panel);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+          a.addEventListener('click', function (e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+            document.getElementById('mobile-menu')?.classList.add('hidden');
+          });
+        });
+
+        // Enter key support for auth forms
+        document.getElementById('login-password')?.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('signup-confirm')?.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') handleSignup();
+        });
+      });
+
+      /* ── Auth Modal Controls ───────────────────────── */
+      function openAuthModal(mode) {
+        const modal = document.getElementById('auth-modal');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        if (mode === 'signup') { showSignup(); } else { showLogin(); }
+      }
+
+      function closeAuthModal() {
+        document.getElementById('auth-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+        clearAuthErrors();
+      }
+
+      function showLogin() {
+        document.getElementById('login-form').classList.remove('hidden');
+        document.getElementById('signup-form').classList.add('hidden');
+        clearAuthErrors();
+        document.getElementById('login-email')?.focus();
+      }
+
+      function showSignup() {
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('signup-form').classList.remove('hidden');
+        clearAuthErrors();
+        document.getElementById('signup-name')?.focus();
+      }
+
+      function clearAuthErrors() {
+        ['login-error','login-success','signup-error','signup-success'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.classList.add('hidden'); el.textContent = ''; }
+        });
+      }
+
+      /* ── Login Handler ─────────────────────────────── */
+      async function handleLogin() {
+        const email    = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        const errorDiv = document.getElementById('login-error');
+        const successDiv = document.getElementById('login-success');
+        const btn = document.getElementById('login-btn');
+        const btnText = document.getElementById('login-btn-text');
+
+        clearAuthErrors();
+        if (!email || !password) { errorDiv.textContent = 'Please fill in all fields.'; errorDiv.classList.remove('hidden'); return; }
+
+        btn.classList.add('btn-loading');
+        btnText.textContent = 'LOGGING IN...';
+
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (res.ok) {
+            successDiv.textContent = data.message || 'Success! Redirecting...';
+            successDiv.classList.remove('hidden');
+            setTimeout(() => { window.location.href = data.redirect; }, 600);
+          } else {
+            errorDiv.textContent = data.error;
+            errorDiv.classList.remove('hidden');
+          }
+        } catch (err) {
+          errorDiv.textContent = 'Connection error. Please try again.';
+          errorDiv.classList.remove('hidden');
+        } finally {
+          btn.classList.remove('btn-loading');
+          btnText.textContent = "LET'S GO!";
+        }
+      }
+
+      /* ── Signup Handler ────────────────────────────── */
+      async function handleSignup() {
+        const name             = document.getElementById('signup-name').value.trim();
+        const email            = document.getElementById('signup-email').value.trim();
+        const password         = document.getElementById('signup-password').value;
+        const confirm_password = document.getElementById('signup-confirm').value;
+        const errorDiv         = document.getElementById('signup-error');
+        const successDiv       = document.getElementById('signup-success');
+        const btn = document.getElementById('signup-btn');
+        const btnText = document.getElementById('signup-btn-text');
+
+        clearAuthErrors();
+        if (!name || !email || !password || !confirm_password) {
+          errorDiv.textContent = 'Please fill in all fields.'; errorDiv.classList.remove('hidden'); return;
+        }
+        if (password.length < 6) {
+          errorDiv.textContent = 'Password must be at least 6 characters.'; errorDiv.classList.remove('hidden'); return;
+        }
+        if (password !== confirm_password) {
+          errorDiv.textContent = 'Passwords do not match.'; errorDiv.classList.remove('hidden'); return;
+        }
+
+        btn.classList.add('btn-loading');
+        btnText.textContent = 'CREATING...';
+
+        try {
+          const res = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, confirm_password })
+          });
+          const data = await res.json();
+
+          if (res.ok) {
+            successDiv.textContent = data.message || 'Account created! Redirecting...';
+            successDiv.classList.remove('hidden');
+            setTimeout(() => { window.location.href = data.redirect; }, 600);
+          } else {
+            errorDiv.textContent = data.error;
+            errorDiv.classList.remove('hidden');
+          }
+        } catch (err) {
+          errorDiv.textContent = 'Connection error. Please try again.';
+          errorDiv.classList.remove('hidden');
+        } finally {
+          btn.classList.remove('btn-loading');
+          btnText.textContent = 'CREATE ACCOUNT!';
+        }
+      }
+
+      /* ── Close modal on Escape key ─────────────────── */
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeAuthModal();
+      });
+    </script>
+  </body>
+</html>
