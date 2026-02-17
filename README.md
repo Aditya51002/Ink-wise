@@ -1,6 +1,7 @@
+
 # InkWise - Creative Writing Assistant
 
-InkWise is an AI-powered creative writing assistant with a manga-inspired interface that helps writers overcome writer's block and craft amazing stories.
+InkWise is an AI-powered creative writing assistant with a manga-inspired interface. It features a modern Flask backend, MongoDB authentication (with secure password hashing), and a stylish, interactive frontend to help writers overcome writer's block and craft amazing stories.
 
 ## 🎨 Features
 
@@ -11,52 +12,62 @@ InkWise is an AI-powered creative writing assistant with a manga-inspired interf
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 - **Multiple Writing Styles**: Choose from different creative writing approaches
 
+
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 - Modern web browser (Chrome, Firefox, Safari, Edge)
-- [Node.js](https://nodejs.org/) (for local development)
-- API key for AI service (Google AI/OpenAI)
+- [Python 3.10+](https://www.python.org/)
+- [MongoDB](https://www.mongodb.com/try/download/community) running locally or remotely
 
 ### Installation
 
 1. **Download or Clone the Project**
    ```bash
    git clone <repository-url>
-   cd inkwise
+   cd Ink-wise
    ```
 
 2. **Set Up Environment Variables**
-   Create a `.env` file in the project root:
+   Create a `.env` file in the project root (see `.env.example`):
    ```
-   API_KEY=your_api_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
+   SECRET_KEY=your_flask_secret_key
+   MONGO_URI=mongodb://localhost:27017/inkwise
    ```
 
-3. **Start Local Server**
+3. **Install Python Dependencies**
    ```bash
-   # Using Node.js http-server
-   npx http-server
-   
-   # Or using Python
-   python -m http.server 8000
+   pip install -r requirements.txt
    ```
 
-4. **Open in Browser**
-   - Landing page: `http://localhost:8080/landing.html`
-   - Main app: `http://localhost:8080/index.html`
+4. **Start MongoDB**
+   - Make sure MongoDB is running (default: `mongodb://localhost:27017/inkwise`).
+
+5. **Run the Flask Server**
+   ```bash
+   python app.py
+   ```
+
+6. **Open in Browser**
+   - Go to: `http://localhost:5000` (landing page)
+   - After login/signup, you will be redirected to the chatbot interface.
 
 ## 📁 Project Structure
 
 ```
-inkwise/
-├── index.html          # Main writing assistant interface
-├── landing.html        # Home/landing page
-├── .env               # Environment variables (API keys)
-├── .env-config.js     # Frontend environment configuration
-├── script.js          # Main application logic
-├── styles.css         # Additional custom styles
-└── README.md          # This file
+Ink-wise/
+├── app.py                # Flask backend (all routes, API, MongoDB, AI integration)
+├── requirements.txt      # Python dependencies
+├── .env                  # Environment variables (not committed)
+├── static/
+│   ├── css/styles.css    # Custom styles
+│   └── js/script.js      # Main frontend logic
+├── templates/
+│   ├── landing.html      # Landing page (login/signup modals)
+│   └── chatbot.html      # Authenticated chat UI
+└── README.md             # This file
 ```
 
 ## 🎯 Usage
@@ -75,10 +86,11 @@ inkwise/
 
 ## ⚙️ Configuration
 
+
 ### API Setup
-1. Get an API key from your preferred AI service
-2. Add it to your `.env` file
-3. Ensure `.env-config.js` loads the key properly
+1. Get a Gemini API key from Google AI Studio
+2. Add it to your `.env` file as `GEMINI_API_KEY`
+3. Set your Flask `SECRET_KEY` and MongoDB URI as needed
 
 ### Customization
 - **Fonts**: Modify Google Fonts imports in HTML head
@@ -88,12 +100,13 @@ inkwise/
 
 ## 🛠️ Technical Details
 
+
 ### Technologies Used
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Styling**: Tailwind CSS, Custom CSS
+- **Backend**: Python 3, Flask, MongoDB (PyMongo), Jinja2, Google Gemini AI
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+), Tailwind CSS, Custom CSS
+- **Authentication**: Secure password hashing (Werkzeug), session-based login
 - **Fonts**: Google Fonts (Bangers, Comic Neue, Pacifico)
 - **Icons**: Remix Icon library
-- **API**: RESTful API calls to AI services
 
 ### Browser Support
 - Chrome 80+
@@ -105,18 +118,19 @@ inkwise/
 
 ### Common Issues
 
+
+**Login/Signup Not Working**
+- Make sure MongoDB is running and accessible
+- Passwords are securely hashed—do not insert users manually with plain text passwords
+- Always use the signup form to create new users
+
 **API Key Not Found**
-- Ensure `.env` file exists and contains valid `API_KEY`
+- Ensure `.env` file exists and contains valid `GEMINI_API_KEY`
 - Check console for loading errors
-- Verify `.env-config.js` is loaded before main scripts
 
-**MIME Type Errors**
-- Always use a local server (never open files directly)
-- Check file extensions and server configuration
-
-**Navigation Issues**
-- Verify file paths in onclick handlers
-- Ensure all HTML files are in the same directory
+**Server/Port Issues**
+- Always use the Flask server (`python app.py`)
+- Do not open HTML files directly or use a static server for dynamic features
 
 **Styling Problems**
 - Check Tailwind CSS CDN connection

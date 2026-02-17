@@ -1,11 +1,7 @@
-/**
- * InkWise — Chatbot Frontend
- * Communicates with Flask backend API for chat management and AI responses.
- * All chat data is persisted in MongoDB via the server.
- */
+
 
 document.addEventListener('DOMContentLoaded', function () {
-  // ── DOM References ────────────────────────────────────────
+ 
   const chatHistory     = document.getElementById('chat-history');
   const messageInput    = document.getElementById('message-input');
   const sendButton      = document.getElementById('send-button');
@@ -16,13 +12,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const sidebarToggle   = document.getElementById('sidebar-toggle');
   const sidebar         = document.getElementById('sidebar');
 
-  // ── State ─────────────────────────────────────────────────
   let chats       = [];
   let activeChat  = null;
   let currentStyle = 'article';
   let isSending   = false;
 
-  // ── Initialise ────────────────────────────────────────────
+
   initializeApp();
 
   async function initializeApp() {
@@ -31,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     await loadChats();
   }
 
-  // ── Style Dropdown ────────────────────────────────────────
+
   function populateStyleDropdown() {
     const styles = [
       'poem', 'article', 'academic', 'story', 'comedy',
@@ -47,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     styleSelect.value = currentStyle;
   }
 
-  // ── Event Listeners ───────────────────────────────────────
   function setupEventListeners() {
     sendButton.addEventListener('click', sendMessage);
 
@@ -66,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     chatsList.addEventListener('click', handleChatListClick);
 
-    // Prompt suggestion buttons
+  
     document.querySelectorAll('.prompt-suggestion').forEach(btn => {
       btn.addEventListener('click', function () {
         messageInput.value = this.textContent.trim();
@@ -104,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return res;
   }
 
-  // ── Load Chats from Server ────────────────────────────────
   async function loadChats() {
     try {
       const res = await apiFetch('/api/chats');
@@ -122,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // ── Create New Chat ───────────────────────────────────────
   async function createNewChat() {
     try {
       const res = await apiFetch('/api/chats', { method: 'POST' });
@@ -136,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // ── Set Active Chat ───────────────────────────────────────
   async function setActiveChat(chatId) {
     activeChat = chatId;
     highlightActiveChat(chatId);
@@ -161,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ── Render Chat Sidebar ───────────────────────────────────
+ 
   function renderChatsList() {
     chatsList.innerHTML = '';
     chats.forEach(chat => {
@@ -186,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
     highlightActiveChat(activeChat);
   }
 
-  // ── Render Messages ───────────────────────────────────────
+
   function renderMessages(messages) {
     chatHistory.innerHTML = '';
     if (!messages || messages.length === 0) {
@@ -246,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function formatContent(content) {
-    // Basic formatting: newlines, bold, italic
+   
     let html = escapeHtml(content);
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -254,24 +245,20 @@ document.addEventListener('DOMContentLoaded', function () {
     return html;
   }
 
-  // ── Send Message ──────────────────────────────────────────
+ 
   async function sendMessage() {
     const text = messageInput.value.trim();
     if (!text || !activeChat || isSending) return;
     isSending = true;
-
-    // Clear empty state if present
     const emptyState = chatHistory.querySelector('.flex.items-center.justify-center');
     if (emptyState) chatHistory.innerHTML = '';
 
-    // Show user message immediately
     chatHistory.appendChild(createMessageElement({ role: 'user', content: text }));
     messageInput.value = '';
     messageInput.style.height = 'auto';
     showLoading();
     scrollToBottom();
 
-    // Disable send button
     sendButton.disabled = true;
     sendButton.classList.add('opacity-60');
 
@@ -289,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }));
       } else {
         chatHistory.appendChild(createMessageElement(data.assistant_message));
-        // Update sidebar title if changed
+
         if (data.title) {
           const chat = chats.find(c => c._id === activeChat);
           if (chat && chat.title !== data.title) {
@@ -312,11 +299,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // ── Chat List Actions ─────────────────────────────────────
   function handleChatListClick(e) {
     const target = e.target;
 
-    // Edit button
     if (target.closest('.edit-chat-btn')) {
       const chatItem = target.closest('.chat-item');
       if (chatItem) startEditingTitle(chatItem.dataset.id);

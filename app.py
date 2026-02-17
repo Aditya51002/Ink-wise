@@ -1,7 +1,3 @@
-"""
-InkWise — Creative Writing Assistant
-Flask backend with MongoDB authentication and Gemini AI integration.
-"""
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from pymongo import MongoClient
@@ -16,15 +12,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  APP CONFIG
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'inkwise-dev-secret-change-in-production')
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  MONGODB
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/inkwise')
 client = MongoClient(MONGO_URI)
 db = client['inkwise']
@@ -34,9 +26,7 @@ chats_col = db['chats']
 users_col.create_index('email', unique=True)
 chats_col.create_index('user_id')
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  GEMINI AI
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 GEMINI_KEY = os.getenv('GEMINI_API_KEY')
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
@@ -58,9 +48,7 @@ WRITING_STYLES = {
     'haiku':     'a three-line Japanese poetry format (5-7-5 syllables)',
 }
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  AUTH HELPERS
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 def login_required(f):
     """Redirect unauthenticated visitors; return 401 for AJAX calls."""
     @wraps(f)
@@ -84,8 +72,7 @@ def current_user():
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  PAGE ROUTES
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 @app.route('/')
 def landing():
     return render_template('landing.html')
@@ -98,9 +85,7 @@ def chatbot():
     return render_template('chatbot.html', user=user)
 
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  AUTH API
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 @app.route('/api/signup', methods=['POST'])
 def signup():
     data = request.get_json() or {}
@@ -174,9 +159,7 @@ def get_user():
     return jsonify({'error': 'User not found'}), 404
 
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  CHAT API
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 @app.route('/api/chats', methods=['GET'])
 @login_required
 def list_chats():
@@ -294,9 +277,7 @@ def send_message(chat_id):
     })
 
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  AI GENERATION
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 def _generate(topic: str, style: str) -> str:
     if ai_model is None:
         return ('The AI service is not configured. '
@@ -316,9 +297,7 @@ def _generate(topic: str, style: str) -> str:
     return response.text
 
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-#  RUN
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 if __name__ == '__main__':
     print('\n  InkWise server starting...')
     print(f'   MongoDB : mongodb://localhost:27017/inkwise')
