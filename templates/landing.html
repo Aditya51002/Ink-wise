@@ -414,6 +414,7 @@
 
         <!-- ──────── LOGIN FORM ──────── -->
         <div id="login-form" class="manga-panel bg-white p-8 w-full max-w-md relative modal-animate z-10">
+
           <button onclick="closeAuthModal()" class="absolute top-3 right-4 text-3xl font-bold leading-none hover:text-gray-500 transition-colors">&times;</button>
 
           <div class="sound-effect bg-black text-white inline-block mb-4 text-lg">LOGIN!</div>
@@ -423,25 +424,27 @@
           <div id="login-error" class="hidden bg-red-50 border-2 border-red-400 text-red-700 p-3 rounded mb-4 manga-text text-sm"></div>
           <div id="login-success" class="hidden bg-green-50 border-2 border-green-400 text-green-700 p-3 rounded mb-4 manga-text text-sm"></div>
 
-          <div class="space-y-4">
-            <div>
-              <label class="manga-text block mb-1 text-sm text-gray-700">Email Address</label>
-              <input type="email" id="login-email"
-                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
-                placeholder="your@email.com" autocomplete="email">
+          <form onsubmit="event.preventDefault(); handleLogin();" autocomplete="on">
+            <div class="space-y-4">
+              <div>
+                <label class="manga-text block mb-1 text-sm text-gray-700">Email Address</label>
+                <input type="email" id="login-email"
+                  class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                  placeholder="your@email.com" autocomplete="email">
+              </div>
+              <div>
+                <label class="manga-text block mb-1 text-sm text-gray-700">Password</label>
+                <input type="password" id="login-password"
+                  class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                  placeholder="Enter your password" autocomplete="current-password">
+              </div>
+              <button id="login-btn" type="submit"
+                class="action-button w-full bg-black text-white text-xl px-6 py-3 !rounded-button whitespace-nowrap transform -rotate-1 relative overflow-hidden">
+                <span class="relative z-10" id="login-btn-text">LET'S GO!</span>
+                <div class="absolute inset-0 halftone opacity-20 hover-effect"></div>
+              </button>
             </div>
-            <div>
-              <label class="manga-text block mb-1 text-sm text-gray-700">Password</label>
-              <input type="password" id="login-password"
-                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
-                placeholder="Enter your password" autocomplete="current-password">
-            </div>
-            <button id="login-btn" onclick="handleLogin()"
-              class="action-button w-full bg-black text-white text-xl px-6 py-3 !rounded-button whitespace-nowrap transform -rotate-1 relative overflow-hidden">
-              <span class="relative z-10" id="login-btn-text">LET'S GO!</span>
-              <div class="absolute inset-0 halftone opacity-20 hover-effect"></div>
-            </button>
-          </div>
+          </form>
 
           <p class="manga-text text-center mt-6 text-sm">
             Don't have an account?
@@ -451,6 +454,7 @@
 
         <!-- ──────── SIGNUP FORM ──────── -->
         <div id="signup-form" class="manga-panel bg-white p-8 w-full max-w-md relative modal-animate-alt z-10 hidden">
+
           <button onclick="closeAuthModal()" class="absolute top-3 right-4 text-3xl font-bold leading-none hover:text-gray-500 transition-colors">&times;</button>
 
           <div class="sound-effect bg-black text-white inline-block mb-4 text-lg">JOIN!</div>
@@ -460,39 +464,41 @@
           <div id="signup-error" class="hidden bg-red-50 border-2 border-red-400 text-red-700 p-3 rounded mb-4 manga-text text-sm"></div>
           <div id="signup-success" class="hidden bg-green-50 border-2 border-green-400 text-green-700 p-3 rounded mb-4 manga-text text-sm"></div>
 
-          <div class="space-y-4">
-            <div>
-              <label class="manga-text block mb-1 text-sm text-gray-700">Full Name</label>
-              <input type="text" id="signup-name"
-                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
-                placeholder="Your full name" autocomplete="name">
-            </div>
-            <div>
-              <label class="manga-text block mb-1 text-sm text-gray-700">Email Address</label>
-              <input type="email" id="signup-email"
-                class="auth-input w-full border-2 border-black p-3 rounded manga-text"
-                placeholder="your@email.com" autocomplete="email">
-            </div>
-            <div class="grid grid-cols-2 gap-3">
+          <form onsubmit="event.preventDefault(); handleSignup();" autocomplete="on">
+            <div class="space-y-4">
               <div>
-                <label class="manga-text block mb-1 text-sm text-gray-700">Password</label>
-                <input type="password" id="signup-password"
+                <label class="manga-text block mb-1 text-sm text-gray-700">Full Name</label>
+                <input type="text" id="signup-name"
                   class="auth-input w-full border-2 border-black p-3 rounded manga-text"
-                  placeholder="Min 6 chars" autocomplete="new-password">
+                  placeholder="Your full name" autocomplete="name">
               </div>
               <div>
-                <label class="manga-text block mb-1 text-sm text-gray-700">Confirm</label>
-                <input type="password" id="signup-confirm"
+                <label class="manga-text block mb-1 text-sm text-gray-700">Email Address</label>
+                <input type="email" id="signup-email"
                   class="auth-input w-full border-2 border-black p-3 rounded manga-text"
-                  placeholder="Re-type" autocomplete="new-password">
+                  placeholder="your@email.com" autocomplete="email">
               </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="manga-text block mb-1 text-sm text-gray-700">Password</label>
+                  <input type="password" id="signup-password"
+                    class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                    placeholder="Min 6 chars" autocomplete="new-password">
+                </div>
+                <div>
+                  <label class="manga-text block mb-1 text-sm text-gray-700">Confirm</label>
+                  <input type="password" id="signup-confirm"
+                    class="auth-input w-full border-2 border-black p-3 rounded manga-text"
+                    placeholder="Re-type" autocomplete="new-password">
+                </div>
+              </div>
+              <button id="signup-btn" type="submit"
+                class="action-button w-full bg-black text-white text-xl px-6 py-3 !rounded-button whitespace-nowrap transform rotate-1 relative overflow-hidden">
+                <span class="relative z-10" id="signup-btn-text">CREATE ACCOUNT!</span>
+                <div class="absolute inset-0 halftone opacity-20 hover-effect"></div>
+              </button>
             </div>
-            <button id="signup-btn" onclick="handleSignup()"
-              class="action-button w-full bg-black text-white text-xl px-6 py-3 !rounded-button whitespace-nowrap transform rotate-1 relative overflow-hidden">
-              <span class="relative z-10" id="signup-btn-text">CREATE ACCOUNT!</span>
-              <div class="absolute inset-0 halftone opacity-20 hover-effect"></div>
-            </button>
-          </div>
+          </form>
 
           <p class="manga-text text-center mt-6 text-sm">
             Already have an account?

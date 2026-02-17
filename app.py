@@ -139,13 +139,21 @@ def login():
     email    = data.get('email', '').strip().lower()
     password = data.get('password', '')
 
+    print(f"[LOGIN DEBUG] Received login for email: '{email}'")
+
     if not email or not password:
+        print("[LOGIN DEBUG] Missing email or password.")
         return jsonify({'error': 'Email and password are required.'}), 400
 
     user = users_col.find_one({'email': email})
-    if not user or not check_password_hash(user['password'], password):
+    if not user:
+        print(f"[LOGIN DEBUG] No user found for email: '{email}'")
+        return jsonify({'error': 'Invalid email or password.'}), 401
+    if not check_password_hash(user['password'], password):
+        print(f"[LOGIN DEBUG] Password mismatch for email: '{email}'")
         return jsonify({'error': 'Invalid email or password.'}), 401
 
+    print(f"[LOGIN DEBUG] Login successful for email: '{email}'")
     session['user_id']   = str(user['_id'])
     session['user_name'] = user['name']
     return jsonify({'message': 'Welcome back!', 'redirect': url_for('chatbot')}), 200
