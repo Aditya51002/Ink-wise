@@ -34,7 +34,7 @@ InkWise is an AI-powered creative writing assistant with a manga-inspired interf
    ```
    GEMINI_API_KEY=your_gemini_api_key_here
    SECRET_KEY=your_flask_secret_key
-   MONGO_URI=mongodb://localhost:27017/inkwise
+   MONGO_URI=your_mongodb_uri
    ```
 
 3. **Install Python Dependencies**
@@ -43,7 +43,7 @@ InkWise is an AI-powered creative writing assistant with a manga-inspired interf
    ```
 
 4. **Start MongoDB**
-   - Make sure MongoDB is running (default: `mongodb://localhost:27017/inkwise`).
+   - Make sure MongoDB is running (default: `mongodb:your_mongodb_uri`).
 
 5. **Run the Flask Server**
    ```bash
