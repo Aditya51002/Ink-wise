@@ -81,14 +81,14 @@
           <a href="#reviews" class="manga-text text-black hover:text-gray-700 relative px-2 py-1">Reviews</a>
         </nav>
         <div class="flex items-center space-x-4">
-          
-            <span class="manga-text text-gray-600 hidden sm:inline"></span>
+          {% if session.user_id %}
+            <span class="manga-text text-gray-600 hidden sm:inline">{{ session.user_name }}</span>
             <a href="/chatbot" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap text-sm">Open ChatBot</a>
             <a href="/api/logout" class="manga-text text-red-600 hover:text-red-800 text-sm">Logout</a>
-          
+          {% else %}
             <a href="javascript:void(0)" onclick="openAuthModal('login')" class="manga-text text-black hover:text-gray-700 cursor-pointer">Login</a>
             <button onclick="openAuthModal('signup')" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap">Sign Up Free</button>
-          
+          {% endif %}
         </div>
         <div class="md:hidden w-8 h-8 flex items-center justify-center cursor-pointer" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
           <i class="ri-menu-line ri-lg"></i>
@@ -101,13 +101,13 @@
         <a href="#examples" class="block manga-text py-2">Examples</a>
         <a href="#reviews" class="block manga-text py-2">Reviews</a>
         <hr class="my-2 border-gray-300"/>
-        
+        {% if session.user_id %}
           <a href="/chatbot" class="block manga-text py-2 text-indigo-700">Open ChatBot</a>
           <a href="/api/logout" class="block manga-text py-2 text-red-600">Logout</a>
-        
+        {% else %}
           <a href="javascript:void(0)" onclick="openAuthModal('login')" class="block manga-text py-2">Login</a>
           <a href="javascript:void(0)" onclick="openAuthModal('signup')" class="block manga-text py-2 text-indigo-700">Sign Up Free</a>
-        
+        {% endif %}
       </div>
     </header>
 
@@ -132,17 +132,17 @@
                 "Ready to bring your imagination to life? I'll help you craft the perfect story!"
               </p>
             </div>
-            
+            {% if session.user_id %}
               <button onclick="window.location.href='/chatbot'" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
                 <span class="relative z-10">BOOM! START WRITING</span>
                 <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
               </button>
-            
+            {% else %}
               <button onclick="openAuthModal('signup')" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
                 <span class="relative z-10">BOOM! GET STARTED</span>
                 <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
               </button>
-            
+            {% endif %}
           </div>
         </div>
       </section>
@@ -332,18 +332,19 @@
               Join thousands of writers who have transformed their creative process
               with InkWise. Start crafting your masterpiece today!
             </p>
-            
+            {% if session.user_id %}
             <button onclick="window.location.href='/chatbot'"
               class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
               <span class="relative z-10">LAUNCH THE CHATBOT!</span>
               <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
             </button>
-            
+            {% else %}
             <button onclick="openAuthModal('signup')"
               class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
               <span class="relative z-10">LAUNCH THE CHATBOT!</span>
               <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
             </button>
+            {% endif %}
                 
           </div>
         </div>
