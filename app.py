@@ -1,12 +1,14 @@
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
+from bson.errors import InvalidId
 from datetime import datetime
 from functools import wraps
 import os
 import re
+from urllib.parse import urlparse
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -14,7 +16,10 @@ load_dotenv()
 
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'inkwise-dev-secret-change-in-production')
+secret_key = os.getenv('SECRET_KEY')
+if not secret_key:
+    raise RuntimeError('SECRET_KEY is required. Set it in your environment before starting the app.')
+app.secret_key = secret_key
 
 
 MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/inkwise')
@@ -61,10 +66,42 @@ def login_required(f):
     return decorated
 
 
+def parse_object_id(value: str):
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        return None
+
+
+def is_same_origin() -> bool:
+    host_origin = request.host_url.rstrip('/')
+    origin = request.headers.get('Origin')
+    if origin:
+        return origin == host_origin
+
+    referer = request.headers.get('Referer')
+    if not referer:
+        return False
+
+    parsed = urlparse(referer)
+    referer_origin = f"{parsed.scheme}://{parsed.netloc}"
+    return referer_origin == host_origin
+
+
+@app.before_request
+def enforce_csrf():
+    if request.method in ('POST', 'PUT', 'DELETE', 'PATCH'):
+        if not is_same_origin():
+            return jsonify({'error': 'CSRF validation failed.'}), 403
+
+
 def current_user():
     uid = session.get('user_id')
     if uid:
-        user = users_col.find_one({'_id': ObjectId(uid)})
+        oid = parse_object_id(uid)
+        if not oid:
+            return None
+        user = users_col.find_one({'_id': oid})
         if user:
             user['_id'] = str(user['_id'])
             return user
@@ -75,7 +112,14 @@ def current_user():
 
 @app.route('/')
 def landing():
-    return render_template('landing.html')
+    user = current_user()
+    return render_template('landing.html', user=user)
+
+
+@app.route('/.well-known/appspecific/com.chrome.devtools.json')
+def chrome_devtools_well_known():
+    well_known_dir = os.path.join(app.root_path, '.well-known', 'appspecific')
+    return send_from_directory(well_known_dir, 'com.chrome.devtools.json')
 
 
 @app.route('/chatbot')
@@ -192,12 +236,15 @@ def create_chat():
 @app.route('/api/chats/<chat_id>', methods=['PUT'])
 @login_required
 def update_chat(chat_id):
+    oid = parse_object_id(chat_id)
+    if not oid:
+        return jsonify({'error': 'Invalid chat id'}), 400
     data = request.get_json() or {}
     title = data.get('title', '').strip()
     if not title:
         return jsonify({'error': 'Title required'}), 400
     chats_col.update_one(
-        {'_id': ObjectId(chat_id), 'user_id': session['user_id']},
+        {'_id': oid, 'user_id': session['user_id']},
         {'$set': {'title': title, 'updated_at': datetime.utcnow()}}
     )
     return jsonify({'message': 'Updated'})
@@ -206,15 +253,21 @@ def update_chat(chat_id):
 @app.route('/api/chats/<chat_id>', methods=['DELETE'])
 @login_required
 def delete_chat(chat_id):
-    chats_col.delete_one({'_id': ObjectId(chat_id), 'user_id': session['user_id']})
+    oid = parse_object_id(chat_id)
+    if not oid:
+        return jsonify({'error': 'Invalid chat id'}), 400
+    chats_col.delete_one({'_id': oid, 'user_id': session['user_id']})
     return jsonify({'message': 'Deleted'})
 
 
 @app.route('/api/chats/<chat_id>/messages', methods=['GET'])
 @login_required
 def get_messages(chat_id):
+    oid = parse_object_id(chat_id)
+    if not oid:
+        return jsonify({'error': 'Invalid chat id'}), 400
     chat = chats_col.find_one(
-        {'_id': ObjectId(chat_id), 'user_id': session['user_id']}
+        {'_id': oid, 'user_id': session['user_id']}
     )
     if not chat:
         return jsonify({'error': 'Chat not found'}), 404
@@ -227,6 +280,9 @@ def get_messages(chat_id):
 @app.route('/api/chats/<chat_id>/messages', methods=['POST'])
 @login_required
 def send_message(chat_id):
+    oid = parse_object_id(chat_id)
+    if not oid:
+        return jsonify({'error': 'Invalid chat id'}), 400
     data  = request.get_json() or {}
     topic = data.get('message', '').strip()
     style = data.get('style', 'article').strip()
@@ -235,7 +291,7 @@ def send_message(chat_id):
         return jsonify({'error': 'Message required'}), 400
 
     chat = chats_col.find_one(
-        {'_id': ObjectId(chat_id), 'user_id': session['user_id']}
+        {'_id': oid, 'user_id': session['user_id']}
     )
     if not chat:
         return jsonify({'error': 'Chat not found'}), 404

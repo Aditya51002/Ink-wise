@@ -24,52 +24,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
-    <style>
-      :where([class^="ri-"])::before { content: "\f3c2"; }
-      body {
-        font-family: 'Comic Neue', cursive;
-        background-color: #f8f8f8;
-        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E");
-      }
-      .manga-title { font-family: 'Bangers', cursive; letter-spacing: 1px; }
-      .manga-text { font-family: 'Comic Neue', cursive; font-weight: 700; }
-      .manga-panel {
-        border: 2px solid #000; position: relative; overflow: hidden;
-        box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
-      }
-      .speech-bubble { position: relative; background: #fff; border: 2px solid #000; border-radius: 12px; padding: 1rem; }
-      .speech-bubble:after {
-        content: ''; position: absolute; bottom: -15px; left: 50%;
-        width: 0; height: 0; border: 15px solid transparent;
-        border-top-color: #000; border-bottom: 0; margin-left: -15px;
-      }
-      .thought-bubble { position: relative; background: #fff; border: 2px solid #000; border-radius: 50%; padding: 1rem; }
-      .thought-bubble:before { content: ''; position: absolute; bottom: -10px; right: 25px; width: 20px; height: 20px; background: #fff; border: 2px solid #000; border-radius: 50%; }
-      .thought-bubble:after  { content: ''; position: absolute; bottom: -20px; right: 15px; width: 10px; height: 10px; background: #fff; border: 2px solid #000; border-radius: 50%; }
-      .action-button { font-family: 'Bangers', cursive; transform: rotate(-2deg); transition: all 0.2s ease; }
-      .action-button:hover { transform: scale(1.05) rotate(0deg); }
-      .action-button:hover .hover-effect { opacity: 0.35; background-size: 10px 10px; }
-      .action-button:active .hover-effect { opacity: 0.5; background-size: 12px 12px; background-image: radial-gradient(#fff 1px, transparent 1px); }
-      .halftone { background-image: radial-gradient(#000 1px, transparent 1px); background-size: 8px 8px; }
-      .star-rating { position: relative; display: inline-block; font-size: 0; }
-      .star-rating span { display: inline-block; position: relative; width: 20px; height: 20px; }
-      .star-rating span:before { content: "\2605"; font-size: 20px; color: #000; }
-      .manga-page-flip { position: relative; transition: all 0.3s ease; }
-      .manga-page-flip:hover { transform: perspective(1000px) rotateY(-5deg); box-shadow: 10px 5px 15px rgba(0,0,0,0.1); }
-      .sound-effect { font-family: 'Bangers', cursive; transform: rotate(-5deg) skew(-5deg); display: inline-block; padding: 0.25rem 0.5rem; letter-spacing: 1px; }
-
-      /* Auth Modal Styles */
-      .auth-backdrop { backdrop-filter: blur(6px); }
-      .auth-input { transition: all 0.2s ease; }
-      .auth-input:focus { border-color: #000; box-shadow: 3px 3px 0px rgba(0,0,0,0.15); outline: none; }
-      @keyframes modalSlideIn { from { opacity: 0; transform: translateY(30px) rotate(0deg); } to { opacity: 1; transform: translateY(0) rotate(1deg); } }
-      @keyframes modalSlideInAlt { from { opacity: 0; transform: translateY(30px) rotate(0deg); } to { opacity: 1; transform: translateY(0) rotate(-1deg); } }
-      .modal-animate { animation: modalSlideIn 0.35s ease-out forwards; }
-      .modal-animate-alt { animation: modalSlideInAlt 0.35s ease-out forwards; }
-      .btn-loading { pointer-events: none; opacity: 0.7; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
   </head>
-  <body>
+  <body class="landing-page">
     <!-- ═══════════════════ HEADER ═══════════════════ -->
     <header class="w-full bg-white border-b-2 border-black sticky top-0 z-40">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -81,14 +38,14 @@
           <a href="#reviews" class="manga-text text-black hover:text-gray-700 relative px-2 py-1">Reviews</a>
         </nav>
         <div class="flex items-center space-x-4">
-          {% if session.user_id %}
-            <span class="manga-text text-gray-600 hidden sm:inline">{{ session.user_name }}</span>
-            <a href="/chatbot" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap text-sm">Open ChatBot</a>
-            <a href="/api/logout" class="manga-text text-red-600 hover:text-red-800 text-sm">Logout</a>
-          {% else %}
-            <a href="javascript:void(0)" onclick="openAuthModal('login')" class="manga-text text-black hover:text-gray-700 cursor-pointer">Login</a>
-            <button onclick="openAuthModal('signup')" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap">Sign Up Free</button>
-          {% endif %}
+            {% if user %}
+              <span class="manga-text text-gray-600 hidden sm:inline">Hi, {{ user.name }}</span>
+              <a href="{{ url_for('chatbot') }}" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap text-sm">Open ChatBot</a>
+              <a href="{{ url_for('logout') }}" class="manga-text text-red-600 hover:text-red-800 text-sm">Logout</a>
+            {% else %}
+              <a href="javascript:void(0)" onclick="openAuthModal('login')" class="manga-text text-black hover:text-gray-700 cursor-pointer">Login</a>
+              <button onclick="openAuthModal('signup')" class="action-button bg-black text-white px-4 py-2 !rounded-button whitespace-nowrap">Sign Up Free</button>
+            {% endif %}
         </div>
         <div class="md:hidden w-8 h-8 flex items-center justify-center cursor-pointer" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
           <i class="ri-menu-line ri-lg"></i>
@@ -101,13 +58,13 @@
         <a href="#examples" class="block manga-text py-2">Examples</a>
         <a href="#reviews" class="block manga-text py-2">Reviews</a>
         <hr class="my-2 border-gray-300"/>
-        {% if session.user_id %}
-          <a href="/chatbot" class="block manga-text py-2 text-indigo-700">Open ChatBot</a>
-          <a href="/api/logout" class="block manga-text py-2 text-red-600">Logout</a>
-        {% else %}
-          <a href="javascript:void(0)" onclick="openAuthModal('login')" class="block manga-text py-2">Login</a>
-          <a href="javascript:void(0)" onclick="openAuthModal('signup')" class="block manga-text py-2 text-indigo-700">Sign Up Free</a>
-        {% endif %}
+          {% if user %}
+            <a href="{{ url_for('chatbot') }}" class="block manga-text py-2 text-indigo-700">Open ChatBot</a>
+            <a href="{{ url_for('logout') }}" class="block manga-text py-2 text-red-600">Logout</a>
+          {% else %}
+            <a href="javascript:void(0)" onclick="openAuthModal('login')" class="block manga-text py-2">Login</a>
+            <a href="javascript:void(0)" onclick="openAuthModal('signup')" class="block manga-text py-2 text-indigo-700">Sign Up Free</a>
+          {% endif %}
       </div>
     </header>
 
@@ -132,17 +89,18 @@
                 "Ready to bring your imagination to life? I'll help you craft the perfect story!"
               </p>
             </div>
-            {% if session.user_id %}
-              <button onclick="window.location.href='/chatbot'" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
-                <span class="relative z-10">BOOM! START WRITING</span>
-                <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
-              </button>
-            {% else %}
-              <button onclick="openAuthModal('signup')" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
-                <span class="relative z-10">BOOM! GET STARTED</span>
-                <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
-              </button>
-            {% endif %}
+              {% if user %}
+                <button onclick="window.location.href={{ url_for('chatbot') | tojson }}" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+                  <span class="relative z-10">BOOM! START WRITING</span>
+                  <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+                </button>
+              {% else %}
+                <button onclick="openAuthModal('signup')" class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+                  <span class="relative z-10">BOOM! GET STARTED</span>
+                  <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+                </button>
+              {% endif %}
+  
           </div>
         </div>
       </section>
@@ -332,19 +290,20 @@
               Join thousands of writers who have transformed their creative process
               with InkWise. Start crafting your masterpiece today!
             </p>
-            {% if session.user_id %}
-            <button onclick="window.location.href='/chatbot'"
-              class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
-              <span class="relative z-10">LAUNCH THE CHATBOT!</span>
-              <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
-            </button>
+            {% if user %}
+              <button onclick="window.location.href={{ url_for('chatbot') | tojson }}"
+                class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+                <span class="relative z-10">LAUNCH THE CHATBOT!</span>
+                <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+              </button>
             {% else %}
-            <button onclick="openAuthModal('signup')"
-              class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
-              <span class="relative z-10">LAUNCH THE CHATBOT!</span>
-              <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
-            </button>
+              <button onclick="openAuthModal('signup')"
+                class="action-button bg-black text-white text-2xl px-8 py-4 !rounded-button whitespace-nowrap transform -rotate-2 relative overflow-hidden">
+                <span class="relative z-10">LAUNCH THE CHATBOT!</span>
+                <div class="absolute inset-0 halftone opacity-20 transition-all duration-300 hover-effect"></div>
+              </button>
             {% endif %}
+   
                 
           </div>
         </div>

@@ -60,7 +60,7 @@
 
         <!-- Action Buttons -->
         <div class="p-3 space-y-2">
-          <button onclick="window.location.href='/'"
+          <button onclick="window.location.href={{ url_for('landing') | tojson }}"
             class="w-full bg-ink-100 hover:bg-ink-200 manga-text py-2.5 px-4 rounded-lg text-ink-700 text-sm transition-colors flex items-center gap-2">
             <i class="ri-home-4-line"></i> Back to Home
           </button>
@@ -90,7 +90,7 @@
                 <p class="text-xs text-gray-400 truncate">{{ user.email if user else '' }}</p>
               </div>
             </div>
-            <a href="/api/logout" class="text-gray-400 hover:text-red-500 transition-colors" title="Logout">
+            <a href="{{ url_for('logout') }}" class="text-gray-400 hover:text-red-500 transition-colors" title="Logout">
               <i class="ri-logout-box-r-line ri-lg"></i>
             </a>
           </div>

@@ -1,0 +1,4 @@
+{
+  "$comment": "This file is requested by Chrome DevTools at /.well-known/appspecific/com.chrome.devtools.json during local development.",
+  "status": "ok"
+}
