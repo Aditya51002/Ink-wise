@@ -21,22 +21,43 @@ document.addEventListener('DOMContentLoaded', function () {
   initializeApp();
 
   async function initializeApp() {
-    populateStyleDropdown();
+    await populateStyleDropdown();
     setupEventListeners();
     await loadChats();
   }
 
 
-  function populateStyleDropdown() {
-    const styles = [
-      'poem', 'article', 'academic', 'story', 'comedy',
-      'script', 'fairytale', 'letter', 'sonnet', 'haiku'
+  async function populateStyleDropdown() {
+    const fallbackStyles = [
+      { value: 'article', label: 'Article' },
+      { value: 'story', label: 'Story' },
+      { value: 'poem', label: 'Poem' },
+      { value: 'manga_comic', label: 'Manga Style Comic' },
+      { value: 'comic', label: 'Comic Script' },
+      { value: 'academic', label: 'Academic' },
+      { value: 'comedy', label: 'Comedy' },
+      { value: 'script', label: 'Screenplay' },
+      { value: 'fairytale', label: 'Fairytale' },
+      { value: 'letter', label: 'Letter' },
+      { value: 'sonnet', label: 'Sonnet' },
+      { value: 'haiku', label: 'Haiku' }
     ];
+
+    let styles = fallbackStyles;
+    try {
+      const res = await apiFetch('/api/styles');
+      if (res && res.ok) {
+        styles = await res.json();
+      }
+    } catch (err) {
+      console.warn('Using fallback writing styles:', err);
+    }
+
     styleSelect.innerHTML = '';
-    styles.forEach(s => {
+    styles.forEach(style => {
       const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+      opt.value = style.value;
+      opt.textContent = style.label;
       styleSelect.appendChild(opt);
     });
     styleSelect.value = currentStyle;
@@ -88,11 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // ── API Helpers ───────────────────────────────────────────
   async function apiFetch(url, options = {}) {
     const res = await fetch(url, {
-      headers: { 'Content-Type': 'application/json', ...options.headers },
       ...options,
+      headers: { 'Content-Type': 'application/json', ...options.headers },
     });
     if (res.status === 401) {
-      window.location.href = '/';
+      const data = await res.clone().json().catch(() => ({}));
+      window.location.href = data.login_url || '/?auth=login&next=/chatbot';
       return null;
     }
     return res;

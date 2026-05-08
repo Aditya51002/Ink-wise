@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
@@ -9,7 +9,7 @@ from functools import wraps
 import os
 import re
 from urllib.parse import urlparse
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -20,6 +20,10 @@ secret_key = os.getenv('SECRET_KEY')
 if not secret_key:
     raise RuntimeError('SECRET_KEY is required. Set it in your environment before starting the app.')
 app.secret_key = secret_key
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+)
 
 
 MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/inkwise')
@@ -33,25 +37,29 @@ chats_col.create_index('user_id')
 
 
 GEMINI_KEY = os.getenv('GEMINI_API_KEY')
+GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
 if GEMINI_KEY:
-    genai.configure(api_key=GEMINI_KEY)
-    ai_model = genai.GenerativeModel('gemini-1.5-pro-latest')
+    ai_client = genai.Client(api_key=GEMINI_KEY)
 else:
-    ai_model = None
+    ai_client = None
     print('\n  WARNING: GEMINI_API_KEY not found in .env — AI responses disabled.\n')
 
-WRITING_STYLES = {
-    'poem':      'a poetic form with rhythmic language and vivid imagery',
-    'article':   'a journalistic article with clear paragraphs and an informative tone',
-    'academic':  'an academic paper with formal language and structured arguments',
-    'story':     'a short story with narrative elements, characters, and plot',
-    'comedy':    'a humorous piece with jokes and lighthearted tone',
-    'script':    'a screenplay/dialogue format with character names and stage directions',
-    'fairytale': 'a whimsical fairytale with magical elements and folkloric style',
-    'letter':    'a personal or formal letter with appropriate greetings and closings',
-    'sonnet':    'a 14-line poetic form following a specific rhyme scheme',
-    'haiku':     'a three-line Japanese poetry format (5-7-5 syllables)',
-}
+STYLE_OPTIONS = [
+    {'value': 'poem', 'label': 'Poem', 'description': 'a poetic form with rhythmic language and vivid imagery'},
+    {'value': 'article', 'label': 'Article', 'description': 'a journalistic article with clear paragraphs and an informative tone'},
+    {'value': 'academic', 'label': 'Academic', 'description': 'an academic paper with formal language and structured arguments'},
+    {'value': 'story', 'label': 'Story', 'description': 'a short story with narrative elements, characters, and plot'},
+    {'value': 'manga_comic', 'label': 'Manga Style Comic', 'description': 'a manga-style comic script with panels, dialogue, action beats, and visual direction'},
+    {'value': 'comic', 'label': 'Comic Script', 'description': 'a comic-book script with panel descriptions, captions, and character dialogue'},
+    {'value': 'comedy', 'label': 'Comedy', 'description': 'a humorous piece with jokes and lighthearted tone'},
+    {'value': 'script', 'label': 'Screenplay', 'description': 'a screenplay/dialogue format with character names and stage directions'},
+    {'value': 'fairytale', 'label': 'Fairytale', 'description': 'a whimsical fairytale with magical elements and folkloric style'},
+    {'value': 'letter', 'label': 'Letter', 'description': 'a personal or formal letter with appropriate greetings and closings'},
+    {'value': 'sonnet', 'label': 'Sonnet', 'description': 'a 14-line poetic form following a specific rhyme scheme'},
+    {'value': 'haiku', 'label': 'Haiku', 'description': 'a three-line Japanese poetry format with compact, image-rich language'},
+]
+
+WRITING_STYLES = {style['value']: style['description'] for style in STYLE_OPTIONS}
 
 
 def login_required(f):
@@ -59,9 +67,13 @@ def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if 'user_id' not in session:
+            next_url = url_for('chatbot') if request.path.startswith('/api/') else request.path
             if request.is_json:
-                return jsonify({'error': 'Authentication required'}), 401
-            return redirect(url_for('landing'))
+                return jsonify({
+                    'error': 'Authentication required',
+                    'login_url': url_for('landing', auth='login', next=next_url),
+                }), 401
+            return redirect(url_for('landing', auth='login', next=next_url))
         return f(*args, **kwargs)
     return decorated
 
@@ -81,11 +93,22 @@ def is_same_origin() -> bool:
 
     referer = request.headers.get('Referer')
     if not referer:
-        return False
+        return True
 
     parsed = urlparse(referer)
     referer_origin = f"{parsed.scheme}://{parsed.netloc}"
     return referer_origin == host_origin
+
+
+def safe_next_url(target: str | None, fallback: str | None = None) -> str:
+    fallback = fallback or url_for('chatbot')
+    if not target:
+        return fallback
+
+    parsed = urlparse(target)
+    if parsed.scheme or parsed.netloc or not target.startswith('/'):
+        return fallback
+    return target
 
 
 @app.before_request
@@ -113,13 +136,15 @@ def current_user():
 @app.route('/')
 def landing():
     user = current_user()
-    return render_template('landing.html', user=user)
-
-
-@app.route('/.well-known/appspecific/com.chrome.devtools.json')
-def chrome_devtools_well_known():
-    well_known_dir = os.path.join(app.root_path, '.well-known', 'appspecific')
-    return send_from_directory(well_known_dir, 'com.chrome.devtools.json')
+    auth_mode = request.args.get('auth', '')
+    if auth_mode not in ('login', 'signup'):
+        auth_mode = ''
+    return render_template(
+        'landing.html',
+        user=user,
+        auth_mode=auth_mode,
+        auth_next=safe_next_url(request.args.get('next')),
+    )
 
 
 @app.route('/chatbot')
@@ -127,6 +152,12 @@ def chrome_devtools_well_known():
 def chatbot():
     user = current_user()
     return render_template('chatbot.html', user=user)
+
+
+@app.route('/api/styles')
+@login_required
+def get_styles():
+    return jsonify(STYLE_OPTIONS)
 
 
 
@@ -137,6 +168,7 @@ def signup():
     email    = data.get('email', '').strip().lower()
     password = data.get('password', '')
     confirm  = data.get('confirm_password', '')
+    next_url = safe_next_url(data.get('next'))
 
     if not all([name, email, password]):
         return jsonify({'error': 'All fields are required.'}), 400
@@ -159,7 +191,7 @@ def signup():
 
     session['user_id']   = str(result.inserted_id)
     session['user_name'] = name
-    return jsonify({'message': 'Account created!', 'redirect': url_for('chatbot')}), 201
+    return jsonify({'message': 'Account created!', 'redirect': next_url}), 201
 
 
 @app.route('/api/login', methods=['POST'])
@@ -167,30 +199,27 @@ def login():
     data = request.get_json() or {}
     email    = data.get('email', '').strip().lower()
     password = data.get('password', '')
-
-    print(f"[LOGIN DEBUG] Received login for email: '{email}'")
+    next_url = safe_next_url(data.get('next'))
 
     if not email or not password:
-        print("[LOGIN DEBUG] Missing email or password.")
         return jsonify({'error': 'Email and password are required.'}), 400
 
     user = users_col.find_one({'email': email})
     if not user:
-        print(f"[LOGIN DEBUG] No user found for email: '{email}'")
         return jsonify({'error': 'Invalid email or password.'}), 401
     if not check_password_hash(user['password'], password):
-        print(f"[LOGIN DEBUG] Password mismatch for email: '{email}'")
         return jsonify({'error': 'Invalid email or password.'}), 401
 
-    print(f"[LOGIN DEBUG] Login successful for email: '{email}'")
     session['user_id']   = str(user['_id'])
     session['user_name'] = user['name']
-    return jsonify({'message': 'Welcome back!', 'redirect': url_for('chatbot')}), 200
+    return jsonify({'message': 'Welcome back!', 'redirect': next_url}), 200
 
 
-@app.route('/api/logout')
+@app.route('/api/logout', methods=['GET', 'POST'])
 def logout():
     session.clear()
+    if request.method == 'POST' or request.is_json:
+        return jsonify({'message': 'Logged out', 'redirect': url_for('landing')})
     return redirect(url_for('landing'))
 
 
@@ -289,6 +318,8 @@ def send_message(chat_id):
 
     if not topic:
         return jsonify({'error': 'Message required'}), 400
+    if style not in WRITING_STYLES:
+        return jsonify({'error': 'Invalid writing style'}), 400
 
     chat = chats_col.find_one(
         {'_id': oid, 'user_id': session['user_id']}
@@ -324,7 +355,7 @@ def send_message(chat_id):
         new_title = ' '.join(words[:5]) + ('...' if len(words) > 5 else '')
         update['$set']['title'] = new_title
 
-    chats_col.update_one({'_id': ObjectId(chat_id)}, update)
+    chats_col.update_one({'_id': oid, 'user_id': session['user_id']}, update)
 
     return jsonify({
         'user_message':      user_msg,
@@ -335,7 +366,7 @@ def send_message(chat_id):
 
 
 def _generate(topic: str, style: str) -> str:
-    if ai_model is None:
+    if ai_client is None:
         return ('The AI service is not configured. '
                 'Please set GEMINI_API_KEY in your .env file.')
 
@@ -349,14 +380,17 @@ def _generate(topic: str, style: str) -> str:
         f"3. Appropriate length for the style\n"
         f"4. No meta-commentary — just the writing itself\n"
     )
-    response = ai_model.generate_content(prompt)
-    return response.text
+    response = ai_client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=prompt,
+    )
+    return response.text or ''
 
 
 
 if __name__ == '__main__':
     print('\n  InkWise server starting...')
     print(f'   MongoDB : mongodb://localhost:27017/inkwise')
-    print(f'   Gemini  : {"configured" if ai_model else "NOT configured"}')
+    print(f'   Gemini  : {GEMINI_MODEL if ai_client else "NOT configured"}')
     print(f'   URL     : http://localhost:5000\n')
     app.run(debug=True, host='0.0.0.0', port=5000)

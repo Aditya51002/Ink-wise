@@ -508,7 +508,11 @@
       });
 
       /* ── Auth Modal Controls ───────────────────────── */
-      function openAuthModal(mode) {
+      const initialAuthMode = {{ (auth_mode if not user else '')|default('')|tojson }};
+      let authNextUrl = {{ auth_next|default('/chatbot')|tojson }};
+
+      function openAuthModal(mode, nextUrl) {
+        authNextUrl = nextUrl || authNextUrl || '/chatbot';
         const modal = document.getElementById('auth-modal');
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -561,7 +565,7 @@
           const res = await fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password, next: authNextUrl })
           });
           const data = await res.json();
 
@@ -611,7 +615,7 @@
           const res = await fetch('/api/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password, confirm_password })
+            body: JSON.stringify({ name, email, password, confirm_password, next: authNextUrl })
           });
           const data = await res.json();
 
@@ -636,6 +640,10 @@
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeAuthModal();
       });
+
+      if (initialAuthMode) {
+        window.addEventListener('load', () => openAuthModal(initialAuthMode, authNextUrl));
+      }
     </script>
   </body>
 </html>

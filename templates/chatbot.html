@@ -148,10 +148,28 @@
                     class="w-full border-2 border-ink-200 p-3 rounded-xl manga-text focus:outline-none focus:border-ink-500 min-h-[80px] max-h-[200px] resize-y transition-colors"
                     placeholder="Share your creative writing ideas or ask for help with characters, plot, dialogue..."></textarea>
                 </div>
-                <div class="flex flex-row md:flex-col gap-2 shrink-0">
-                  <select id="style-select"
-                    class="flex-1 md:w-36 border-2 border-ink-200 manga-text font-bold p-2 rounded-lg text-sm focus:outline-none focus:border-ink-500 transition-colors">
-                  </select>
+                <div class="flex flex-row md:flex-col gap-2 shrink-0 md:w-48">
+                  <div class="flex-1">
+                    <label for="style-select" class="block manga-text text-xs text-ink-700 mb-1 uppercase tracking-wide">
+                      Writing Mode
+                    </label>
+                    <select id="style-select"
+                      class="w-full border-2 border-ink-200 manga-text font-bold p-2 rounded-lg text-sm focus:outline-none focus:border-ink-500 transition-colors"
+                      aria-label="Writing mode">
+                      <option value="article">Article</option>
+                      <option value="story">Story</option>
+                      <option value="poem">Poem</option>
+                      <option value="manga_comic">Manga Style Comic</option>
+                      <option value="comic">Comic Script</option>
+                      <option value="academic">Academic</option>
+                      <option value="comedy">Comedy</option>
+                      <option value="script">Screenplay</option>
+                      <option value="fairytale">Fairytale</option>
+                      <option value="letter">Letter</option>
+                      <option value="sonnet">Sonnet</option>
+                      <option value="haiku">Haiku</option>
+                    </select>
+                  </div>
                   <button id="send-button"
                     class="action-button bg-ink-600 hover:bg-ink-700 text-white px-6 py-2.5 rounded-xl whitespace-nowrap flex items-center justify-center gap-2 shadow-sm transition-colors">
                     <span class="relative z-10 manga-text">SEND</span>
